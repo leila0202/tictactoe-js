@@ -3,6 +3,8 @@ const ctx = field.getContext("2d");
 let player = "X";
 let width = field.width;
 let height = field.height;
+let cells = new Array(9);
+cells.fill("");
 
 const cell_sz = width / 3;
 
@@ -17,7 +19,6 @@ for (let i = 1; i <= 2; i++) {
 function drawCells(x, y) {
   for (let i = 1; i <= 2; i++) {
     ctx.beginPath();
-    console.log(i);
     ctx.moveTo(x * i, 0);
     ctx.lineTo(x * i, y);
     ctx.stroke();
@@ -49,20 +50,32 @@ function drawCross(startX, startY) {
 }
 
 function calculateBounds(x, y) {
+  console.log(cells);
   ctx.lineWidth = LINE_WIDTH;
-  let cellNum = -1;
   let xCord = 0;
   let yCord = 0;
   // 0 - cell_sz
   if (between(y, 0, cell_sz)) {
     if (between(x, 0, cell_sz)) {
+      if (cells[0] == "0" || cells[0] == "X") {
+        return;
+      }
+      cells[0] = player;
       xCord = 0;
       yCord = 0;
     }
     if (between(x, cell_sz, cell_sz * 2)) {
+      if (cells[1] != "") {
+        return;
+      }
+      cells[1] = player;
       xCord = cell_sz;
     }
     if (between(x, cell_sz * 2, cell_sz * 3)) {
+      if (cells[2] != "") {
+        return;
+      }
+      cells[2] = player;
       xCord = cell_sz * 2;
     }
   }
@@ -70,24 +83,48 @@ function calculateBounds(x, y) {
   if (between(y, cell_sz, cell_sz * 2)) {
     yCord = cell_sz;
     if (between(x, 0, cell_sz)) {
+      if (cells[3] != "") {
+        return;
+      }
+      cells[3] = player;
       xCord = 0;
     }
     if (between(x, cell_sz, cell_sz * 2)) {
+      if (cells[4] != "") {
+        return;
+      }
+      cells[4] = player;
       xCord = cell_sz;
     }
     if (between(x, cell_sz * 2, cell_sz * 3)) {
+      if (cells[5] != "") {
+        return;
+      }
+      cells[5] = player;
       xCord = cell_sz * 2;
     }
   }
   if (between(y, cell_sz * 2, cell_sz * 3)) {
     yCord = cell_sz * 2;
     if (between(x, 0, cell_sz)) {
+      if (cells[6] != "") {
+        return;
+      }
+      cells[6] = player;
       xCord = 0;
     }
     if (between(x, cell_sz, cell_sz * 2)) {
+      if (cells[7] != "") {
+        return;
+      }
+      cells[7] = player;
       xCord = cell_sz;
     }
     if (between(x, cell_sz * 2, cell_sz * 3)) {
+      if (cells[8] != "") {
+        return;
+      }
+      cells[8] = player;
       xCord = cell_sz * 2;
     }
   }
@@ -98,6 +135,7 @@ function calculateBounds(x, y) {
     drawCircle(xCord, yCord);
     player = "X";
   }
+  console.log(cells);
 }
 
 function drawCircle(x, y) {
