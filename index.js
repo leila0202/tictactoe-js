@@ -15,7 +15,6 @@ for (let i = 1; i <= 2; i++) {
 }
 
 function drawCells(x, y) {
-  console.log("should only run once");
   for (let i = 1; i <= 2; i++) {
     ctx.beginPath();
     console.log(i);
@@ -27,24 +26,18 @@ function drawCells(x, y) {
 
 field.addEventListener("click", (e) => {
   let xCord = e.offsetX;
-  console.log(
-    "🚀 ~ file: index.js:26 ~ field.addEventListener ~ xCord:",
-    xCord
-  );
-  let yCord = e.offsetY;
-  console.log(
-    "🚀 ~ file: index.js:28 ~ field.addEventListener ~ yCord:",
-    yCord
-  );
 
-  console.log(calculateBounds(xCord, yCord));
+  let yCord = e.offsetY;
+
+  calculateBounds(xCord, yCord);
 });
 
-const OFFSET = 4;
+const OFFSET = 6;
+const LINE_WIDTH = 15;
 
 function drawCross(startX, startY) {
   ctx.strokeStyle = "red";
-  ctx.lineWidth = "10";
+
   ctx.beginPath();
   ctx.moveTo(startX + OFFSET, startY + OFFSET);
   ctx.lineTo(startX + cell_sz - OFFSET, startY + cell_sz - OFFSET);
@@ -53,11 +46,10 @@ function drawCross(startX, startY) {
   ctx.moveTo(startX + cell_sz - OFFSET, startY + OFFSET);
   ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
   ctx.stroke();
-  ctx.strokeStyle = "black";
 }
 
-//first x: 0 - cellsz y: 0 - cellsz
 function calculateBounds(x, y) {
+  ctx.lineWidth = LINE_WIDTH;
   let cellNum = -1;
   let xCord = 0;
   let yCord = 0;
@@ -101,9 +93,20 @@ function calculateBounds(x, y) {
   }
   if (player == "X") {
     drawCross(xCord, yCord);
+    player = "O";
+  } else if (player == "O") {
+    drawCircle(xCord, yCord);
+    player = "X";
   }
+}
 
-  return cellNum;
+function drawCircle(x, y) {
+  ctx.strokeStyle = "blue";
+  const xMiddle = x + cell_sz / 2;
+  const yMiddle = y + cell_sz / 2;
+  ctx.beginPath();
+  ctx.arc(xMiddle, yMiddle, cell_sz / 2 - OFFSET, 0, 2 * Math.PI);
+  ctx.stroke();
 }
 
 function between(num, min, max) {
