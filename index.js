@@ -56,10 +56,7 @@ let turn = 0;
 // 6 7 8
 
 function calculateBounds(x, y) {
-  if (won) {
-    window.alert(`Please Restart the Game - Player ${player} won`);
-    return;
-  }
+  if (won) return;
   ctx.lineWidth = LINE_WIDTH;
   let xCord = 0;
   let yCord = 0;
@@ -159,7 +156,7 @@ function drawFigure(xCord, yCord) {
 
 function checkWin(player) {
   turn += 1;
-  if (turn == 10 && !won) {
+  if (turn == 9 && !won) {
     document.getElementById("title").innerText = `No winner`;
     refresh.toggleAttribute("disabled");
     return;
