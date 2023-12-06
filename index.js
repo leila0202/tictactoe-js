@@ -143,8 +143,6 @@ function calculateBounds(x, y) {
 
   if (won) {
     document.getElementById("title").innerText = `Player ${player} won`;
-    ctx.restore();
-    ctx.fillText(`Player ${player} won`, 0, 0, field.width);
     refresh.removeAttribute("disabled");
   }
 }
@@ -163,7 +161,6 @@ function checkWin(player) {
   turn += 1;
   if (turn == 10 && !won) {
     document.getElementById("title").innerText = `No winner`;
-    window.alert("No Winner");
     refresh.toggleAttribute("disabled");
     return;
   }
