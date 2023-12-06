@@ -3,19 +3,26 @@
   <head>
     <title>TicTacToe in Vanilla JS</title>
   </head>
-  <body style="width: 100%">
-    <h1 id="title" style="text-align: center">TicTacToe</h1>
-    <div style="display: flex; justify-content: center; align-items: center">
+  <body>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      "
+    >
+      <h1 id="title" style="text-align: center">TicTacToe</h1>
+      <button style="height: 20px; margin: 5px" id="refresh" disabled>
+        Restart
+      </button>
       <canvas
         id="field"
         width="800"
         height="800"
         style="border: 1px solid black"
       ></canvas>
-      <button style="height: 20px; margin: 5px" id="refresh" disabled>
-        Restart
-      </button>
+      <script src="./index.js"></script>
     </div>
-    <script src="./index.js"></script>
   </body>
 </html>
