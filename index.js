@@ -56,7 +56,9 @@ let turn = 0;
 // 6 7 8
 
 function calculateBounds(x, y) {
-  if (won) return;
+  if (won) {
+    return;
+  }
   ctx.lineWidth = LINE_WIDTH;
   let xCord = 0;
   let yCord = 0;
@@ -140,6 +142,14 @@ function calculateBounds(x, y) {
 
   if (won) {
     document.getElementById("title").innerText = `Player ${player} won`;
+    ctx.clearRect(0, 0, field.width, field.height);
+    ctx.font = "60px Times New Roman";
+    let text = `Player ${player} won`;
+    ctx.fillText(
+      text,
+      ctx.measureText(text).width / 2,
+      ctx.measureText(text).height / 2
+    );
     refresh.removeAttribute("disabled");
   }
 }
