@@ -5,7 +5,10 @@ let width = field.width;
 let height = field.height;
 let cells = new Array(9);
 cells.fill("");
+let won = false;
 
+const refresh = document.getElementById("refresh");
+refresh.setAttribute("disabled", "true");
 const cell_sz = width / 3;
 
 drawCells(cell_sz, height);
@@ -29,7 +32,6 @@ field.addEventListener("click", (e) => {
   let xCord = e.offsetX;
 
   let yCord = e.offsetY;
-
   calculateBounds(xCord, yCord);
 });
 
@@ -48,16 +50,23 @@ function drawCross(startX, startY) {
   ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
   ctx.stroke();
 }
+let turn = 0;
+// 0 1 2
+// 3 4 5
+// 6 7 8
 
 function calculateBounds(x, y) {
-  console.log(cells);
+  if (won) {
+    window.alert(`Please Restart the Game - Player ${player} won`);
+    return;
+  }
   ctx.lineWidth = LINE_WIDTH;
   let xCord = 0;
   let yCord = 0;
   // 0 - cell_sz
   if (between(y, 0, cell_sz)) {
     if (between(x, 0, cell_sz)) {
-      if (cells[0] == "0" || cells[0] == "X") {
+      if (cells[0] != "") {
         return;
       }
       cells[0] = player;
@@ -128,14 +137,65 @@ function calculateBounds(x, y) {
       xCord = cell_sz * 2;
     }
   }
+  won = checkWin(player);
+
+  drawFigure(xCord, yCord);
+
+  if (won) {
+    document.getElementById("title").innerText = `Player ${player} won`;
+    ctx.restore();
+    ctx.fillText(`Player ${player} won`, 0, 0, field.width);
+    refresh.removeAttribute("disabled");
+  }
+}
+
+function drawFigure(xCord, yCord) {
   if (player == "X") {
     drawCross(xCord, yCord);
-    player = "O";
+    if (!won) player = "O";
   } else if (player == "O") {
     drawCircle(xCord, yCord);
-    player = "X";
+    if (!won) player = "X";
   }
-  console.log(cells);
+}
+
+function checkWin(player) {
+  turn += 1;
+  if (turn == 10 && !won) {
+    document.getElementById("title").innerText = `No winner`;
+    window.alert("No Winner");
+    refresh.toggleAttribute("disabled");
+    return;
+  }
+  if (cells[0] == player) {
+    if (cells[1] == player && cells[2] == player) {
+      return true;
+    } else if (cells[3] == player && cells[6] == player) {
+      return true;
+    } else if (cells[4] == player && cells[8] == player) {
+      return true;
+    }
+  }
+  if (cells[1] == player) {
+    if (cells[4] == player && cells[7] == player) {
+      return true;
+    }
+  }
+  if (cells[2] == player) {
+    if (cells[4] == player && cells[6] == player) {
+      return true;
+    } else if (cells[5] == player && cells[8] == player) {
+      return true;
+    }
+  }
+
+  if (cells[3] == player && cells[4] == player && cells[5] == player) {
+    return true;
+  }
+  if (cells[6] == player && cells[7] == player && cells[8] == player) {
+    return true;
+  }
+  return false;
 }
 
 function drawCircle(x, y) {
@@ -150,3 +210,7 @@ function drawCircle(x, y) {
 function between(num, min, max) {
   return num > min && num < max;
 }
+
+refresh.addEventListener("click", () => {
+  window.location.reload();
+});
