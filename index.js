@@ -1,6 +1,6 @@
 const field = document.getElementById("field");
 const ctx = field.getContext("2d");
-let player = "X";
+let player = Math.random() < 0.5 ? "X" : "O";
 let width = field.width;
 let height = field.height;
 let cells = new Array(9);
