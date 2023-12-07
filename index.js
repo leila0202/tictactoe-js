@@ -13,6 +13,7 @@ const LINE_WIDTH = 15;
 
 cells.fill("");
 refresh.setAttribute("disabled", "true");
+document.getElementById("title").textContent = `Player ${player}'s turn`;
 
 refresh.addEventListener("click", () => {
   window.location.reload();
@@ -137,6 +138,7 @@ function playPiece(x, y) {
   }
 
   drawPiece(xCord, yCord);
+  document.getElementById("title").textContent = `Player ${player}'s turn`;
   turn += 1;
   won = checkWin(player);
 
