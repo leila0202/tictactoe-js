@@ -1,15 +1,28 @@
 const field = document.getElementById("field");
 const ctx = field.getContext("2d");
 let player = Math.random() < 0.5 ? "X" : "O";
-let width = field.width;
-let height = field.height;
+const width = field.width;
+const height = field.height;
 let cells = new Array(9);
-cells.fill("");
+let turn = 0;
 let won = false;
-
 const refresh = document.getElementById("refresh");
-refresh.setAttribute("disabled", "true");
 const cell_sz = width / 3;
+const OFFSET = 6;
+const LINE_WIDTH = 15;
+
+cells.fill("");
+refresh.setAttribute("disabled", "true");
+
+refresh.addEventListener("click", () => {
+  window.location.reload();
+});
+
+field.addEventListener("click", (e) => {
+  const xCord = e.offsetX;
+  const yCord = e.offsetY;
+  playPiece(xCord, yCord);
+});
 
 drawCells(cell_sz, height);
 for (let i = 1; i <= 2; i++) {
@@ -28,19 +41,8 @@ function drawCells(x, y) {
   }
 }
 
-field.addEventListener("click", (e) => {
-  let xCord = e.offsetX;
-
-  let yCord = e.offsetY;
-  calculateBounds(xCord, yCord);
-});
-
-const OFFSET = 6;
-const LINE_WIDTH = 15;
-
 function drawCross(startX, startY) {
   ctx.strokeStyle = "red";
-
   ctx.beginPath();
   ctx.moveTo(startX + OFFSET, startY + OFFSET);
   ctx.lineTo(startX + cell_sz - OFFSET, startY + cell_sz - OFFSET);
@@ -50,12 +52,8 @@ function drawCross(startX, startY) {
   ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
   ctx.stroke();
 }
-let turn = 0;
-// 0 1 2
-// 3 4 5
-// 6 7 8
 
-function calculateBounds(x, y) {
+function playPiece(x, y) {
   if (won) {
     return;
   }
@@ -137,10 +135,10 @@ function calculateBounds(x, y) {
       xCord = cell_sz * 2;
     }
   }
+
+  drawPiece(xCord, yCord);
   turn += 1;
   won = checkWin(player);
-
-  drawFigure(xCord, yCord);
 
   if (turn == 9 && !won) {
     document.getElementById("title").textContent = "No winner";
@@ -156,7 +154,7 @@ function calculateBounds(x, y) {
   }
 }
 
-function drawFigure(xCord, yCord) {
+function drawPiece(xCord, yCord) {
   if (player == "X") {
     drawCross(xCord, yCord);
     if (!won) player = "O";
@@ -218,7 +216,3 @@ function drawCircle(x, y) {
 function between(num, min, max) {
   return num > min && num < max;
 }
-
-refresh.addEventListener("click", () => {
-  window.location.reload();
-});
