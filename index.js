@@ -62,7 +62,7 @@ function playPiece(x, y) {
   ctx.lineWidth = LINE_WIDTH;
   let xCord = 0;
   let yCord = 0;
-  // 0 - cell_sz
+
   if (between(y, 0, cell_sz)) {
     if (between(x, 0, cell_sz)) {
       if (cells[0] != "") {
@@ -112,6 +112,7 @@ function playPiece(x, y) {
       xCord = cell_sz * 2;
     }
   }
+
   if (between(y, cell_sz * 2, cell_sz * 3)) {
     yCord = cell_sz * 2;
     if (between(x, 0, cell_sz)) {
@@ -136,11 +137,17 @@ function playPiece(x, y) {
       xCord = cell_sz * 2;
     }
   }
-
-  drawPiece(xCord, yCord);
-  document.getElementById("title").textContent = `Player ${player}'s turn`;
-  turn += 1;
   won = checkWin(player);
+  drawPiece(xCord, yCord);
+
+  document.getElementById("title").textContent = `Player ${player}'s turn`;
+
+  turn += 1;
+  if (won) {
+    document.getElementById("title").textContent = `Player ${player} won`;
+    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
+    refresh.removeAttribute("disabled");
+  }
 
   if (turn == 9 && !won) {
     document.getElementById("title").textContent = "No winner";
@@ -148,12 +155,7 @@ function playPiece(x, y) {
     refresh.removeAttribute("disabled");
     return;
   }
-
-  if (won) {
-    document.getElementById("title").textContent = `Player ${player} won`;
-    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
-    refresh.removeAttribute("disabled");
-  }
+  console.log(cells);
 }
 
 function drawPiece(xCord, yCord) {
@@ -170,25 +172,29 @@ function drawTextCentered(text, font, size) {
   ctx.clearRect(0, 0, field.width, field.height);
   ctx.font = `${size}px ${font}`;
   const txtSz = ctx.measureText(text);
-
   ctx.fillText(text, (field.width - txtSz.width) / 2, field.height / 2);
 }
 
 function checkWin(player) {
   if (cells[0] == player) {
     if (cells[1] == player && cells[2] == player) {
+      console.log("first row to right");
       return true;
     } else if (cells[3] == player && cells[6] == player) {
+      console.log("first row down");
       return true;
     } else if (cells[4] == player && cells[8] == player) {
+      console.log("first diag");
       return true;
     }
   }
+
   if (cells[1] == player) {
     if (cells[4] == player && cells[7] == player) {
       return true;
     }
   }
+
   if (cells[2] == player) {
     if (cells[4] == player && cells[6] == player) {
       return true;
@@ -200,9 +206,11 @@ function checkWin(player) {
   if (cells[3] == player && cells[4] == player && cells[5] == player) {
     return true;
   }
+
   if (cells[6] == player && cells[7] == player && cells[8] == player) {
     return true;
   }
+
   return false;
 }
 
