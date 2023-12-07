@@ -59,6 +59,7 @@ function calculateBounds(x, y) {
   if (won) {
     return;
   }
+
   ctx.lineWidth = LINE_WIDTH;
   let xCord = 0;
   let yCord = 0;
@@ -136,20 +137,21 @@ function calculateBounds(x, y) {
       xCord = cell_sz * 2;
     }
   }
+  turn += 1;
   won = checkWin(player);
 
   drawFigure(xCord, yCord);
 
+  if (turn == 9 && !won) {
+    document.getElementById("title").textContent = "No winner";
+    //drawTextCentered(`No Winner`, "Comis Sans", 60);
+    refresh.removeAttribute("disabled");
+    return;
+  }
+
   if (won) {
-    document.getElementById("title").innerText = `Player ${player} won`;
-    ctx.clearRect(0, 0, field.width, field.height);
-    ctx.font = "60px Times New Roman";
-    let text = `Player ${player} won`;
-    ctx.fillText(
-      text,
-      ctx.measureText(text).width / 2,
-      ctx.measureText(text).height / 2
-    );
+    document.getElementById("title").textContent = `Player ${player} won`;
+    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
     refresh.removeAttribute("disabled");
   }
 }
@@ -164,13 +166,15 @@ function drawFigure(xCord, yCord) {
   }
 }
 
+function drawTextCentered(text, font, size) {
+  ctx.clearRect(0, 0, field.width, field.height);
+  ctx.font = `${size}px ${font}`;
+  const txtSz = ctx.measureText(text);
+
+  ctx.fillText(text, (field.width - txtSz.width) / 2, field.height / 2);
+}
+
 function checkWin(player) {
-  turn += 1;
-  if (turn == 9 && !won) {
-    document.getElementById("title").innerText = `No winner`;
-    refresh.toggleAttribute("disabled");
-    return;
-  }
   if (cells[0] == player) {
     if (cells[1] == player && cells[2] == player) {
       return true;
