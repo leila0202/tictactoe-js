@@ -37,25 +37,16 @@ function playPiece(xCoord, yCoord) {
   }
 
   cells[cell.y][cell.x] = player;
-
+  turn += 1;
   won = checkWin();
-
   drawPiece(cell.end, cell.start);
-
+  if (turn === 9) return;
   document.getElementById("title").textContent = `Player ${player}'s turn`;
 
-  turn += 1;
   if (won) {
     document.getElementById("title").textContent = `Player ${player} won`;
     //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
     refresh.removeAttribute("disabled");
-  }
-
-  if (turn === 9 && !won) {
-    document.getElementById("title").textContent = "No winner";
-    //drawTextCentered(`No Winner`, "Comis Sans", 60);
-    refresh.removeAttribute("disabled");
-    return;
   }
 }
 
@@ -111,6 +102,13 @@ function findCell(xCoord, yCoord) {
 // |_|_|_|
 // |_|_|_|
 function checkWin() {
+  if (turn === 9 && !won) {
+    document.getElementById("title").textContent = "No winner";
+    //drawTextCentered(`No Winner`, "Comis Sans", 60);
+    refresh.removeAttribute("disabled");
+    return false;
+  }
+
   if (cells[0][0] === player) {
     if (cells[0][1] === player && cells[0][2] === player) {
       return true;
