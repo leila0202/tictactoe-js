@@ -5,7 +5,7 @@ const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const COUNT = 10;
+const COUNT = 3;
 
 const ROWS = COUNT;
 const COLS = COUNT;
