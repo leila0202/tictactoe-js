@@ -65,7 +65,7 @@ function playPiece(xCoord, yCoord) {
   }
 }
 
-field.addEventListener("click", (e) => {
+field.addEventListener("mousedown", (e) => {
   const xCoord = e.offsetX;
   const yCoord = e.offsetY;
   if (!won) playPiece(xCoord, yCoord);
