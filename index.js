@@ -5,8 +5,8 @@ const width = field.width;
 const height = field.height;
 const ROWS = 3;
 const COLS = 3;
-let cells = [];
-let cell = {};
+const cells = [];
+const cell = {};
 
 for (let i = 0; i < ROWS; i++) {
   cells[i] = [];
@@ -29,19 +29,41 @@ refresh.addEventListener("click", () => {
   window.location.reload();
 });
 
+function playPiece(xCoord, yCoord) {
+  findCell(xCoord, yCoord);
+
+  if (cells[cell.y][cell.x] != "") {
+    return;
+  }
+
+  cells[cell.y][cell.x] = player;
+
+  won = checkWin();
+
+  drawPiece(cell.end, cell.start);
+
+  document.getElementById("title").textContent = `Player ${player}'s turn`;
+
+  turn += 1;
+  if (won) {
+    document.getElementById("title").textContent = `Player ${player} won`;
+    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
+    refresh.removeAttribute("disabled");
+  }
+
+  if (turn === 9 && !won) {
+    document.getElementById("title").textContent = "No winner";
+    //drawTextCentered(`No Winner`, "Comis Sans", 60);
+    refresh.removeAttribute("disabled");
+    return;
+  }
+}
+
 field.addEventListener("click", (e) => {
   const xCoord = e.offsetX;
   const yCoord = e.offsetY;
-  playPiece(xCoord, yCoord);
+  if (!won) playPiece(xCoord, yCoord);
 });
-
-drawCells(cell_sz, height);
-for (let i = 1; i <= 2; i++) {
-  ctx.beginPath();
-  ctx.moveTo(0, cell_sz * i);
-  ctx.lineTo(width, cell_sz * i);
-  ctx.stroke();
-}
 
 function drawCells(x, y) {
   for (let i = 1; i <= 2; i++) {
@@ -52,16 +74,16 @@ function drawCells(x, y) {
   }
 }
 
-function drawCross(startX, startY) {
-  ctx.strokeStyle = "red";
+drawCells(cell_sz, height);
+for (let i = 1; i <= 2; i++) {
   ctx.beginPath();
-  ctx.moveTo(startX + OFFSET, startY + OFFSET);
-  ctx.lineTo(startX + cell_sz - OFFSET, startY + cell_sz - OFFSET);
+  ctx.moveTo(0, cell_sz * i);
+  ctx.lineTo(width, cell_sz * i);
   ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(startX + cell_sz - OFFSET, startY + OFFSET);
-  ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
-  ctx.stroke();
+}
+
+function between(num, min, max) {
+  return num > min && num < max;
 }
 
 function findCell(xCoord, yCoord) {
@@ -85,45 +107,82 @@ function findCell(xCoord, yCoord) {
   cell.end = end;
 }
 
-function playPiece(xCoord, yCoord) {
-  if (won) {
-    return;
+// |_|_|_|
+// |_|_|_|
+// |_|_|_|
+function checkWin() {
+  if (cells[0][0] === player) {
+    if (cells[0][1] === player && cells[0][2] === player) {
+      return true;
+    } else if (cells[1][0] === player && cells[2][0] === player) {
+      return true;
+    } else if (cells[1][1] === player && cells[2][2] === player) {
+      return true;
+    }
   }
 
-  ctx.lineWidth = LINE_WIDTH;
-  findCell(xCoord, yCoord);
-
-  if (cells[cell.y][cell.x] != "") {
-    return;
-  }
-  cells[cell.y][cell.x] = player;
-  console.table(cells);
-  won = checkWin(player);
-  drawPiece(cell.end, cell.start);
-
-  document.getElementById("title").textContent = `Player ${player}'s turn`;
-
-  turn += 1;
-  if (won) {
-    document.getElementById("title").textContent = `Player ${player} won`;
-    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
-    refresh.removeAttribute("disabled");
+  if (cells[0][1] === player) {
+    if (cells[1][1] === player && cells[2][1] === player) {
+      return true;
+    }
   }
 
-  if (turn == 9 && !won) {
-    document.getElementById("title").textContent = "No winner";
-    //drawTextCentered(`No Winner`, "Comis Sans", 60);
-    refresh.removeAttribute("disabled");
-    return;
+  if (cells[0][2] === player) {
+    if (cells[1][1] === player && cells[2][0] === player) {
+      return true;
+    } else if (cells[1][2] === player && cells[2][2] === player) {
+      return true;
+    }
   }
+
+  if (
+    cells[1][0] === player &&
+    cells[1][1] === player &&
+    cells[1][2] === player
+  ) {
+    return true;
+  }
+
+  if (
+    cells[2][0] === player &&
+    cells[2][1] === player &&
+    cells[2][2] === player
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
-function drawPiece(xCord, yCord) {
-  if (player == "X") {
-    drawCross(xCord, yCord);
+function drawCircle(x, y) {
+  ctx.lineWidth = LINE_WIDTH;
+  ctx.strokeStyle = "blue";
+  const xMiddle = x + cell_sz / 2;
+  const yMiddle = y + cell_sz / 2;
+  ctx.beginPath();
+  ctx.arc(xMiddle, yMiddle, cell_sz / 2 - OFFSET, 0, 2 * Math.PI);
+  ctx.stroke();
+}
+
+function drawCross(startX, startY) {
+  ctx.lineWidth = LINE_WIDTH;
+  ctx.strokeStyle = "red";
+  ctx.beginPath();
+  ctx.moveTo(startX + OFFSET, startY + OFFSET);
+  ctx.lineTo(startX + cell_sz - OFFSET, startY + cell_sz - OFFSET);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(startX + cell_sz - OFFSET, startY + OFFSET);
+  ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
+  ctx.stroke();
+}
+
+function drawPiece(xCoord, yCoord) {
+  if (player === "X") {
+    drawCross(xCoord, yCoord);
     if (!won) player = "O";
-  } else if (player == "O") {
-    drawCircle(xCord, yCord);
+  } else if (player === "O") {
+    drawCircle(xCoord, yCoord);
     if (!won) player = "X";
   }
 }
@@ -133,57 +192,4 @@ function drawTextCentered(text, font, size) {
   ctx.font = `${size}px ${font}`;
   const txtSz = ctx.measureText(text);
   ctx.fillText(text, (field.width - txtSz.width) / 2, field.height / 2);
-}
-
-function checkWin(player) {
-  if (cells[0][0] == player) {
-    if (cells[0][1] == player && cells[0][2] == player) {
-      return true;
-    } else if (cells[1][0] == player && cells[2][0] == player) {
-      return true;
-    } else if (cells[1][1] == player && cells[2][2] == player) {
-      return true;
-    }
-  }
-
-  // |_|_|_|
-  // |_|_|_|
-  // |_|_|_|
-
-  if (cells[0][1] == player) {
-    if (cells[1][1] == player && cells[2][1] == player) {
-      return true;
-    }
-  }
-
-  if (cells[0][2] == player) {
-    if (cells[1][1] == player && cells[2][0] == player) {
-      return true;
-    } else if (cells[1][2] == player && cells[2][2] == player) {
-      return true;
-    }
-  }
-
-  if (cells[1][0] == player && cells[1][1] == player && cells[1][2] == player) {
-    return true;
-  }
-
-  if (cells[2][0] == player && cells[2][1] == player && cells[2][2] == player) {
-    return true;
-  }
-
-  return false;
-}
-
-function drawCircle(x, y) {
-  ctx.strokeStyle = "blue";
-  const xMiddle = x + cell_sz / 2;
-  const yMiddle = y + cell_sz / 2;
-  ctx.beginPath();
-  ctx.arc(xMiddle, yMiddle, cell_sz / 2 - OFFSET, 0, 2 * Math.PI);
-  ctx.stroke();
-}
-
-function between(num, min, max) {
-  return num > min && num < max;
 }
