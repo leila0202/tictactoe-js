@@ -146,25 +146,29 @@ function checkWin(player) {
     }
   }
 
-  if (cells[1][0] == player) {
-    if (cells[4] == player && cells[7] == player) {
+  // |_|_|_|
+  // |_|_|_|
+  // |_|_|_|
+
+  if (cells[0][1] == player) {
+    if (cells[1][1] == player && cells[2][1] == player) {
       return true;
     }
   }
 
-  if (cells[2] == player) {
-    if (cells[4] == player && cells[6] == player) {
+  if (cells[0][2] == player) {
+    if (cells[1][1] == player && cells[2][0] == player) {
       return true;
-    } else if (cells[5] == player && cells[8] == player) {
+    } else if (cells[1][2] == player && cells[2][2] == player) {
       return true;
     }
   }
 
-  if (cells[3] == player && cells[4] == player && cells[5] == player) {
+  if (cells[1][0] == player && cells[1][1] == player && cells[1][2] == player) {
     return true;
   }
 
-  if (cells[6] == player && cells[7] == player && cells[8] == player) {
+  if (cells[2][0] == player && cells[2][1] == player && cells[2][2] == player) {
     return true;
   }
 
