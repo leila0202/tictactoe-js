@@ -3,7 +3,18 @@ const ctx = field.getContext("2d");
 let player = Math.random() < 0.5 ? "X" : "O";
 const width = field.width;
 const height = field.height;
-let cells = new Array(9);
+const ROWS = 3;
+const COLS = 3;
+let cells = [];
+let cell = {};
+
+for (let i = 0; i < ROWS; i++) {
+  cells[i] = [];
+  for (let j = 0; j < COLS; j++) {
+    cells[i][j] = "";
+  }
+}
+
 let turn = 0;
 let won = false;
 const refresh = document.getElementById("refresh");
@@ -11,7 +22,6 @@ const cell_sz = width / 3;
 const OFFSET = 6;
 const LINE_WIDTH = 15;
 
-cells.fill("");
 refresh.setAttribute("disabled", "true");
 document.getElementById("title").textContent = `Player ${player}'s turn`;
 
@@ -20,9 +30,9 @@ refresh.addEventListener("click", () => {
 });
 
 field.addEventListener("click", (e) => {
-  const xCord = e.offsetX;
-  const yCord = e.offsetY;
-  playPiece(xCord, yCord);
+  const xCoord = e.offsetX;
+  const yCoord = e.offsetY;
+  playPiece(xCoord, yCoord);
 });
 
 drawCells(cell_sz, height);
@@ -54,91 +64,42 @@ function drawCross(startX, startY) {
   ctx.stroke();
 }
 
-function playPiece(x, y) {
+function findCell(xCoord, yCoord) {
+  let x = 0;
+  let y = 0;
+  let start = 0;
+  let end = 0;
+  for (let i = 0; i <= 2; i++) {
+    if (between(yCoord, cell_sz * i, cell_sz * (i + 1))) {
+      y = i;
+      start = cell_sz * i;
+    }
+    if (between(xCoord, cell_sz * i, cell_sz * (i + 1))) {
+      x = i;
+      end = cell_sz * i;
+    }
+  }
+  cell.x = x;
+  cell.y = y;
+  cell.start = start;
+  cell.end = end;
+}
+
+function playPiece(xCoord, yCoord) {
   if (won) {
     return;
   }
 
   ctx.lineWidth = LINE_WIDTH;
-  let xCord = 0;
-  let yCord = 0;
+  findCell(xCoord, yCoord);
 
-  if (between(y, 0, cell_sz)) {
-    if (between(x, 0, cell_sz)) {
-      if (cells[0] != "") {
-        return;
-      }
-      cells[0] = player;
-      xCord = 0;
-      yCord = 0;
-    }
-    if (between(x, cell_sz, cell_sz * 2)) {
-      if (cells[1] != "") {
-        return;
-      }
-      cells[1] = player;
-      xCord = cell_sz;
-    }
-    if (between(x, cell_sz * 2, cell_sz * 3)) {
-      if (cells[2] != "") {
-        return;
-      }
-      cells[2] = player;
-      xCord = cell_sz * 2;
-    }
+  if (cells[cell.y][cell.x] != "") {
+    return;
   }
-
-  if (between(y, cell_sz, cell_sz * 2)) {
-    yCord = cell_sz;
-    if (between(x, 0, cell_sz)) {
-      if (cells[3] != "") {
-        return;
-      }
-      cells[3] = player;
-      xCord = 0;
-    }
-    if (between(x, cell_sz, cell_sz * 2)) {
-      if (cells[4] != "") {
-        return;
-      }
-      cells[4] = player;
-      xCord = cell_sz;
-    }
-    if (between(x, cell_sz * 2, cell_sz * 3)) {
-      if (cells[5] != "") {
-        return;
-      }
-      cells[5] = player;
-      xCord = cell_sz * 2;
-    }
-  }
-
-  if (between(y, cell_sz * 2, cell_sz * 3)) {
-    yCord = cell_sz * 2;
-    if (between(x, 0, cell_sz)) {
-      if (cells[6] != "") {
-        return;
-      }
-      cells[6] = player;
-      xCord = 0;
-    }
-    if (between(x, cell_sz, cell_sz * 2)) {
-      if (cells[7] != "") {
-        return;
-      }
-      cells[7] = player;
-      xCord = cell_sz;
-    }
-    if (between(x, cell_sz * 2, cell_sz * 3)) {
-      if (cells[8] != "") {
-        return;
-      }
-      cells[8] = player;
-      xCord = cell_sz * 2;
-    }
-  }
+  cells[cell.y][cell.x] = player;
+  console.table(cells);
   won = checkWin(player);
-  drawPiece(xCord, yCord);
+  drawPiece(cell.end, cell.start);
 
   document.getElementById("title").textContent = `Player ${player}'s turn`;
 
@@ -155,7 +116,6 @@ function playPiece(x, y) {
     refresh.removeAttribute("disabled");
     return;
   }
-  console.log(cells);
 }
 
 function drawPiece(xCord, yCord) {
@@ -176,20 +136,17 @@ function drawTextCentered(text, font, size) {
 }
 
 function checkWin(player) {
-  if (cells[0] == player) {
-    if (cells[1] == player && cells[2] == player) {
-      console.log("first row to right");
+  if (cells[0][0] == player) {
+    if (cells[0][1] == player && cells[0][2] == player) {
       return true;
-    } else if (cells[3] == player && cells[6] == player) {
-      console.log("first row down");
+    } else if (cells[1][0] == player && cells[2][0] == player) {
       return true;
-    } else if (cells[4] == player && cells[8] == player) {
-      console.log("first diag");
+    } else if (cells[1][1] == player && cells[2][2] == player) {
       return true;
     }
   }
 
-  if (cells[1] == player) {
+  if (cells[1][0] == player) {
     if (cells[4] == player && cells[7] == player) {
       return true;
     }
