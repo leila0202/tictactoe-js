@@ -1,29 +1,41 @@
 const field = document.getElementById("field");
 const ctx = field.getContext("2d");
-let player = Math.random() < 0.5 ? "X" : "O";
-const width = field.width;
-const height = field.height;
+const title = document.getElementById("title");
+
+const WIDTH = field.width;
+const HEIGHT = field.height;
 const ROWS = 3;
 const COLS = 3;
-const cells = [];
-const cell = {};
-
-for (let i = 0; i < ROWS; i++) {
-  cells[i] = [];
-  for (let j = 0; j < COLS; j++) {
-    cells[i][j] = "";
-  }
-}
-
-let turn = 0;
-let won = false;
-const refresh = document.getElementById("refresh");
-const cell_sz = width / 3;
+const CELL_SZ = WIDTH / 3;
 const OFFSET = 6;
 const LINE_WIDTH = 15;
 
+const cells = [];
+const cell = {};
+let player = Math.random() < 0.5 ? "X" : "O";
+let turn = 0;
+let won = false;
+
+function initArray() {
+  for (let i = 0; i < ROWS; i++) {
+    cells[i] = [];
+    for (let j = 0; j < COLS; j++) {
+      cells[i][j] = "";
+    }
+  }
+}
+
+initArray();
+
+const refresh = document.getElementById("refresh");
+
 refresh.setAttribute("disabled", "true");
-document.getElementById("title").textContent = `Player ${player}'s turn`;
+
+setHeader(`Player ${player}'s turn`);
+
+function setHeader(text) {
+  title.textContent = text;
+}
 
 refresh.addEventListener("click", () => {
   window.location.reload();
@@ -41,11 +53,10 @@ function playPiece(xCoord, yCoord) {
   won = checkWin();
   drawPiece(cell.end, cell.start);
   if (turn === 9) return;
-  document.getElementById("title").textContent = `Player ${player}'s turn`;
+  setHeader(`Player ${player}'s turn`);
 
   if (won) {
-    document.getElementById("title").textContent = `Player ${player} won`;
-    //drawTextCentered(`Player ${player} won`, "Comis Sans", 60);
+    setHeader(`Player ${player} won`);
     refresh.removeAttribute("disabled");
   }
 }
@@ -65,11 +76,11 @@ function drawCells(x, y) {
   }
 }
 
-drawCells(cell_sz, height);
+drawCells(CELL_SZ, HEIGHT);
 for (let i = 1; i <= 2; i++) {
   ctx.beginPath();
-  ctx.moveTo(0, cell_sz * i);
-  ctx.lineTo(width, cell_sz * i);
+  ctx.moveTo(0, CELL_SZ * i);
+  ctx.lineTo(WIDTH, CELL_SZ * i);
   ctx.stroke();
 }
 
@@ -83,13 +94,13 @@ function findCell(xCoord, yCoord) {
   let start = 0;
   let end = 0;
   for (let i = 0; i <= 2; i++) {
-    if (between(yCoord, cell_sz * i, cell_sz * (i + 1))) {
+    if (between(yCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
       y = i;
-      start = cell_sz * i;
+      start = CELL_SZ * i;
     }
-    if (between(xCoord, cell_sz * i, cell_sz * (i + 1))) {
+    if (between(xCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
       x = i;
-      end = cell_sz * i;
+      end = CELL_SZ * i;
     }
   }
   cell.x = x;
@@ -103,8 +114,7 @@ function findCell(xCoord, yCoord) {
 // |_|_|_|
 function checkWin() {
   if (turn === 9 && !won) {
-    document.getElementById("title").textContent = "No winner";
-    //drawTextCentered(`No Winner`, "Comis Sans", 60);
+    setHeader("No Winner");
     refresh.removeAttribute("disabled");
     return false;
   }
@@ -155,10 +165,10 @@ function checkWin() {
 function drawCircle(x, y) {
   ctx.lineWidth = LINE_WIDTH;
   ctx.strokeStyle = "blue";
-  const xMiddle = x + cell_sz / 2;
-  const yMiddle = y + cell_sz / 2;
+  const xMiddle = x + CELL_SZ / 2;
+  const yMiddle = y + CELL_SZ / 2;
   ctx.beginPath();
-  ctx.arc(xMiddle, yMiddle, cell_sz / 2 - OFFSET, 0, 2 * Math.PI);
+  ctx.arc(xMiddle, yMiddle, CELL_SZ / 2 - OFFSET, 0, 2 * Math.PI);
   ctx.stroke();
 }
 
@@ -167,11 +177,11 @@ function drawCross(startX, startY) {
   ctx.strokeStyle = "red";
   ctx.beginPath();
   ctx.moveTo(startX + OFFSET, startY + OFFSET);
-  ctx.lineTo(startX + cell_sz - OFFSET, startY + cell_sz - OFFSET);
+  ctx.lineTo(startX + CELL_SZ - OFFSET, startY + CELL_SZ - OFFSET);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(startX + cell_sz - OFFSET, startY + OFFSET);
-  ctx.lineTo(startX + OFFSET, startY + cell_sz - OFFSET);
+  ctx.moveTo(startX + CELL_SZ - OFFSET, startY + OFFSET);
+  ctx.lineTo(startX + OFFSET, startY + CELL_SZ - OFFSET);
   ctx.stroke();
 }
 
@@ -183,11 +193,4 @@ function drawPiece(xCoord, yCoord) {
     drawCircle(xCoord, yCoord);
     if (!won) player = "X";
   }
-}
-
-function drawTextCentered(text, font, size) {
-  ctx.clearRect(0, 0, field.width, field.height);
-  ctx.font = `${size}px ${font}`;
-  const txtSz = ctx.measureText(text);
-  ctx.fillText(text, (field.width - txtSz.width) / 2, field.height / 2);
 }
