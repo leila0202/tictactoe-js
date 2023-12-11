@@ -52,7 +52,7 @@ function playPiece(xCoord, yCoord) {
   turn += 1;
   won = checkWin();
   drawPiece(cell.end, cell.start);
-  if (turn === 9) return;
+  if (turn === 9 && !won) return;
   setHeader(`Player ${player}'s turn`);
 
   if (won) {
