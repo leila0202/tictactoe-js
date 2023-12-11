@@ -4,9 +4,11 @@ const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const ROWS = 3;
-const COLS = 3;
-const CELL_SZ = WIDTH / 3;
+const COUNT = 4;
+
+const ROWS = COUNT;
+const COLS = COUNT;
+const CELL_SZ = WIDTH / COUNT;
 const OFFSET = 6;
 const LINE_WIDTH = 15;
 
@@ -50,9 +52,10 @@ function playPiece(xCoord, yCoord) {
 
   cells[cell.y][cell.x] = player;
   turn += 1;
+
   won = checkWin();
   drawPiece(cell.end, cell.start);
-  if (turn === 9 && !won) return;
+  if (turn === COUNT * COUNT && !won) return;
   setHeader(`Player ${player}'s turn`);
 
   if (won) {
@@ -68,7 +71,7 @@ field.addEventListener("click", (e) => {
 });
 
 function drawCells(x, y) {
-  for (let i = 1; i <= 2; i++) {
+  for (let i = 1; i < COUNT; i++) {
     ctx.beginPath();
     ctx.moveTo(x * i, 0);
     ctx.lineTo(x * i, y);
@@ -77,7 +80,7 @@ function drawCells(x, y) {
 }
 
 drawCells(CELL_SZ, HEIGHT);
-for (let i = 1; i <= 2; i++) {
+for (let i = 1; i < COUNT; i++) {
   ctx.beginPath();
   ctx.moveTo(0, CELL_SZ * i);
   ctx.lineTo(WIDTH, CELL_SZ * i);
@@ -93,7 +96,7 @@ function findCell(xCoord, yCoord) {
   let y = 0;
   let start = 0;
   let end = 0;
-  for (let i = 0; i <= 2; i++) {
+  for (let i = 0; i < COUNT; i++) {
     if (between(yCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
       y = i;
       start = CELL_SZ * i;
@@ -113,7 +116,7 @@ function findCell(xCoord, yCoord) {
 // |_|_|_|
 // |_|_|_|
 function checkWin() {
-  if (turn === 9 && !won) {
+  if (turn === COUNT * COUNT && !won) {
     setHeader("No Winner");
     refresh.removeAttribute("disabled");
     return false;
