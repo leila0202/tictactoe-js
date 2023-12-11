@@ -1,3 +1,4 @@
+//TODO: Organize code for readability
 const field = document.getElementById("field");
 const ctx = field.getContext("2d");
 const title = document.getElementById("title");
@@ -80,6 +81,7 @@ function drawCells(x, y) {
 }
 
 drawCells(CELL_SZ, HEIGHT);
+// TODO: generalize the drawing of cells
 for (let i = 1; i < COUNT; i++) {
   ctx.beginPath();
   ctx.moveTo(0, CELL_SZ * i);
@@ -115,6 +117,9 @@ function findCell(xCoord, yCoord) {
 // |_|_|_|
 // |_|_|_|
 // |_|_|_|
+
+//TODO: Check win for bigger fields
+//TODO: generalize WIN checking without massive if conditions
 function checkWin() {
   if (turn === COUNT * COUNT && !won) {
     setHeader("No Winner");
@@ -175,6 +180,7 @@ function drawCircle(x, y) {
   ctx.stroke();
 }
 
+// TODO: Maybe Change to Draw Line for more widespread usage?
 function drawCross(startX, startY) {
   ctx.lineWidth = LINE_WIDTH;
   ctx.strokeStyle = "red";
