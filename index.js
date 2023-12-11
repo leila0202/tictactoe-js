@@ -4,13 +4,13 @@ const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const COUNT = 4;
+const COUNT = 10;
 
 const ROWS = COUNT;
 const COLS = COUNT;
 const CELL_SZ = WIDTH / COUNT;
-const OFFSET = 6;
-const LINE_WIDTH = 15;
+const OFFSET = CELL_SZ / 2 / 6;
+const LINE_WIDTH = CELL_SZ / 15;
 
 const cells = [];
 const cell = {};
