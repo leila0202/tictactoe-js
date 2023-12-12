@@ -55,7 +55,7 @@ function playPiece(xCoord, yCoord) {
   turn += 1;
 
   won = checkWin();
-  drawPiece(cell.end, cell.start);
+  drawPiece(cell.x * CELL_SZ, cell.y * CELL_SZ);
   if (turn === COUNT * COUNT && !won) return;
   setHeader(`Player ${player}'s turn`);
 
@@ -66,9 +66,11 @@ function playPiece(xCoord, yCoord) {
 }
 
 field.addEventListener("mousedown", (e) => {
-  const xCoord = e.offsetX;
-  const yCoord = e.offsetY;
-  if (!won) playPiece(xCoord, yCoord);
+  if (e.button === 0) {
+    const xCoord = e.offsetX;
+    const yCoord = e.offsetY;
+    if (!won) playPiece(xCoord, yCoord);
+  }
 });
 
 function drawCells(x, y) {
@@ -94,38 +96,49 @@ function between(num, min, max) {
 }
 
 function findCell(xCoord, yCoord) {
-  let x = 0;
-  let y = 0;
-  let start = 0;
-  let end = 0;
   for (let i = 0; i < COUNT; i++) {
     if (between(yCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
-      y = i;
-      start = CELL_SZ * i;
+      cell.y = i;
     }
     if (between(xCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
-      x = i;
-      end = CELL_SZ * i;
+      cell.x = i;
     }
   }
-  cell.x = x;
-  cell.y = y;
-  cell.start = start;
-  cell.end = end;
 }
 
-// |_|_|_|
-// |_|_|_|
+// |x|_|_|
+// |x|_|_|
 // |_|_|_|
 
 //TODO: Check win for bigger fields
 //TODO: generalize WIN checking without massive if conditions
 function checkWin() {
+  //console.table(cells);
   if (turn === COUNT * COUNT && !won) {
     setHeader("No Winner");
     refresh.removeAttribute("disabled");
-    return false;
+    won = false;
   }
+  //0 0    0 0 x = 0
+  //0 1    1 0
+  //0 2    2 0
+  for (let j = 0; j < COUNT; j++) {
+    if (cell.y === j) {
+      console.log(cell.y);
+      for (let i = 0; i < COUNT; i++) {
+        if (cells[j][i] === player) {
+          won = true;
+        } else {
+          won = false;
+          break;
+        }
+      }
+    }
+  }
+
+  console.log(won);
+  return won;
+  return;
 
   if (cells[0][0] === player) {
     if (cells[0][1] === player && cells[0][2] === player) {
