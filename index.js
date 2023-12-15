@@ -119,12 +119,12 @@ function checkWin() {
     refresh.removeAttribute("disabled");
     won = false;
   }
+
   //0 0    0 0 x = 0
   //0 1    1 0
   //0 2    2 0
   for (let j = 0; j < COUNT; j++) {
     if (cell.y === j) {
-      console.log(cell.y);
       for (let i = 0; i < COUNT; i++) {
         if (cells[j][i] === player) {
           won = true;
@@ -136,9 +136,45 @@ function checkWin() {
     }
   }
 
+  if (won) return won;
+
+  for (let j = 0; j < COUNT; j++) {
+    if (cell.x === j) {
+      for (let i = 0; i < COUNT; i++) {
+        if (cells[i][j] === player) {
+          won = true;
+        } else {
+          won = false;
+          break;
+        }
+      }
+    }
+  }
+
+  if (won) return won;
+
+  for (let j = 0; j < COUNT; j++) {
+    if (cells[j][j] === player) {
+      won = true;
+    } else {
+      won = false;
+      break;
+    }
+  }
+
+  if (won) return won;
+
+  for (let j = 0; j < COUNT; j++) {
+    if (cells[j][j] === player) {
+      won = true;
+    } else {
+      won = false;
+      break;
+    }
+  }
+
   console.log(won);
   return won;
-  return;
 
   if (cells[0][0] === player) {
     if (cells[0][1] === player && cells[0][2] === player) {
