@@ -120,9 +120,6 @@ function checkWin() {
     won = false;
   }
 
-  //0 0    0 0 x = 0
-  //0 1    1 0
-  //0 2    2 0
   for (let j = 0; j < COUNT; j++) {
     if (cell.y === j) {
       for (let i = 0; i < COUNT; i++) {
@@ -152,7 +149,9 @@ function checkWin() {
   }
 
   if (won) return won;
-
+  //cells[0][0] === player &&
+  //cells[1][1] === player &&
+  //cells[2][2] === player
   for (let j = 0; j < COUNT; j++) {
     if (cells[j][j] === player) {
       won = true;
@@ -164,8 +163,12 @@ function checkWin() {
 
   if (won) return won;
 
-  for (let j = 0; j < COUNT; j++) {
-    if (cells[j][j] === player) {
+  //cells[0][2] === player &&
+  //cells[1][1] === player &&
+  //cells[2][0] === player
+  for (let i = COUNT - 1; i >= 0; i--) {
+    //0 + (2-1)
+    if (cells[0 + (COUNT - 1 - i)][i] === player) {
       won = true;
     } else {
       won = false;
@@ -175,48 +178,6 @@ function checkWin() {
 
   console.log(won);
   return won;
-
-  if (cells[0][0] === player) {
-    if (cells[0][1] === player && cells[0][2] === player) {
-      return true;
-    } else if (cells[1][0] === player && cells[2][0] === player) {
-      return true;
-    } else if (cells[1][1] === player && cells[2][2] === player) {
-      return true;
-    }
-  }
-
-  if (cells[0][1] === player) {
-    if (cells[1][1] === player && cells[2][1] === player) {
-      return true;
-    }
-  }
-
-  if (cells[0][2] === player) {
-    if (cells[1][1] === player && cells[2][0] === player) {
-      return true;
-    } else if (cells[1][2] === player && cells[2][2] === player) {
-      return true;
-    }
-  }
-
-  if (
-    cells[1][0] === player &&
-    cells[1][1] === player &&
-    cells[1][2] === player
-  ) {
-    return true;
-  }
-
-  if (
-    cells[2][0] === player &&
-    cells[2][1] === player &&
-    cells[2][2] === player
-  ) {
-    return true;
-  }
-
-  return false;
 }
 
 function drawCircle(x, y) {
