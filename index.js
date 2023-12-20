@@ -1,11 +1,11 @@
 //TODO: Organize code for readability
-const field = document.getElementById("field");
+const field = /** @type{HTMLCanvasElement}*/ (document.getElementById("field"));
 const ctx = field.getContext("2d");
 const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const COUNT = 3;
+const COUNT = 1.5;
 
 const ROWS = COUNT;
 const COLS = COUNT;
@@ -32,18 +32,29 @@ initArray();
 
 const refresh = document.getElementById("refresh");
 
-refresh.setAttribute("disabled", "true");
+refresh?.setAttribute("disabled", "true");
 
 setHeader(`Player ${player}'s turn`);
 
+/**
+ * @param {string} text
+ */
 function setHeader(text) {
+  if (title === null) {
+    console.error("no title element found");
+    return;
+  }
   title.textContent = text;
 }
 
-refresh.addEventListener("click", () => {
+refresh?.addEventListener("click", () => {
   window.location.reload();
 });
 
+/**
+ * @param {number} xCoord
+ * @param {number} yCoord
+ */
 function playPiece(xCoord, yCoord) {
   findCell(xCoord, yCoord);
 
@@ -61,7 +72,7 @@ function playPiece(xCoord, yCoord) {
 
   if (won) {
     setHeader(`Player ${player} won`);
-    refresh.removeAttribute("disabled");
+    refresh?.removeAttribute("disabled");
   }
 }
 
@@ -73,28 +84,41 @@ field.addEventListener("mousedown", (e) => {
   }
 });
 
+/**
+ * @param {number} x
+ * @param {number} y
+ */
 function drawCells(x, y) {
   for (let i = 1; i < COUNT; i++) {
-    ctx.beginPath();
-    ctx.moveTo(x * i, 0);
-    ctx.lineTo(x * i, y);
-    ctx.stroke();
+    ctx?.beginPath();
+    ctx?.moveTo(x * i, 0);
+    ctx?.lineTo(x * i, y);
+    ctx?.stroke();
   }
 }
 
 drawCells(CELL_SZ, HEIGHT);
 // TODO: generalize the drawing of cells
 for (let i = 1; i < COUNT; i++) {
-  ctx.beginPath();
-  ctx.moveTo(0, CELL_SZ * i);
-  ctx.lineTo(WIDTH, CELL_SZ * i);
-  ctx.stroke();
+  ctx?.beginPath();
+  ctx?.moveTo(0, CELL_SZ * i);
+  ctx?.lineTo(WIDTH, CELL_SZ * i);
+  ctx?.stroke();
 }
 
+/**
+ * @param {number} num
+ * @param {number} min
+ * @param {number} max
+ */
 function between(num, min, max) {
   return num > min && num < max;
 }
 
+/**
+ * @param {number} xCoord
+ * @param {number} yCoord
+ */
 function findCell(xCoord, yCoord) {
   for (let i = 0; i < COUNT; i++) {
     if (between(yCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
@@ -106,17 +130,11 @@ function findCell(xCoord, yCoord) {
   }
 }
 
-// |x|_|_|
-// |x|_|_|
-// |_|_|_|
-
-//TODO: Check win for bigger fields
 //TODO: generalize WIN checking without massive if conditions
 function checkWin() {
-  //console.table(cells);
   if (turn === COUNT * COUNT && !won) {
     setHeader("No Winner");
-    refresh.removeAttribute("disabled");
+    refresh?.removeAttribute("disabled");
     won = false;
   }
 
@@ -176,22 +194,37 @@ function checkWin() {
     }
   }
 
-  console.log(won);
   return won;
 }
 
+/**
+ * @param {number} x
+ * @param {number} y
+ */
 function drawCircle(x, y) {
+  if (ctx === null) {
+    console.error("no context found");
+    return;
+  }
   ctx.lineWidth = LINE_WIDTH;
   ctx.strokeStyle = "blue";
   const xMiddle = x + CELL_SZ / 2;
   const yMiddle = y + CELL_SZ / 2;
-  ctx.beginPath();
-  ctx.arc(xMiddle, yMiddle, CELL_SZ / 2 - OFFSET, 0, 2 * Math.PI);
-  ctx.stroke();
+  ctx?.beginPath();
+  ctx?.arc(xMiddle, yMiddle, CELL_SZ / 2 - OFFSET, 0, 2 * Math.PI);
+  ctx?.stroke();
 }
 
 // TODO: Maybe Change to Draw Line for more widespread usage?
+/**
+ * @param {number} startX
+ * @param {number} startY
+ */
 function drawCross(startX, startY) {
+  if (ctx === null) {
+    console.error("no context found");
+    return;
+  }
   ctx.lineWidth = LINE_WIDTH;
   ctx.strokeStyle = "red";
   ctx.beginPath();
