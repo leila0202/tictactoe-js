@@ -5,7 +5,7 @@ const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const COUNT = 1.5;
+const COUNT = 3;
 
 const ROWS = COUNT;
 const COLS = COUNT;
@@ -30,14 +30,17 @@ function initArray() {
 
 initArray();
 
-const refresh = document.getElementById("refresh");
+const refresh = /** @type{HTMLButtonElement}*/ (
+  document.getElementById("refresh")
+);
 
-refresh?.setAttribute("disabled", "true");
-
+if (refresh !== null) {
+  refresh.disabled = true;
+}
 setHeader(`Player ${player}'s turn`);
 
 /**
- * @param {string} text
+ * @param {string} text The Text that should be use inside the "title"
  */
 function setHeader(text) {
   if (title === null) {
@@ -72,7 +75,7 @@ function playPiece(xCoord, yCoord) {
 
   if (won) {
     setHeader(`Player ${player} won`);
-    refresh?.removeAttribute("disabled");
+    refresh.disabled = false;
   }
 }
 
