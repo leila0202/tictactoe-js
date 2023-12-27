@@ -5,11 +5,9 @@ const title = document.getElementById("title");
 
 const WIDTH = field.width;
 const HEIGHT = field.height;
-const COUNT = 3;
+const boardSize = 3;
 
-const ROWS = COUNT;
-const COLS = COUNT;
-const CELL_SZ = WIDTH / COUNT;
+const CELL_SZ = WIDTH / boardSize;
 const OFFSET = CELL_SZ / 2 / 6;
 const LINE_WIDTH = CELL_SZ / 15;
 
@@ -20,9 +18,9 @@ let turn = 0;
 let won = false;
 
 function initArray() {
-  for (let i = 0; i < ROWS; i++) {
+  for (let i = 0; i < boardSize; i++) {
     cells[i] = [];
-    for (let j = 0; j < COLS; j++) {
+    for (let j = 0; j < boardSize; j++) {
       cells[i][j] = "";
     }
   }
@@ -70,7 +68,7 @@ function playPiece(xCoord, yCoord) {
 
   won = checkWin();
   drawPiece(cell.x * CELL_SZ, cell.y * CELL_SZ);
-  if (turn === COUNT * COUNT && !won) return;
+  if (turn === boardSize * boardSize && !won) return;
   setHeader(`Player ${player}'s turn`);
 
   if (won) {
@@ -92,7 +90,7 @@ field.addEventListener("mousedown", (e) => {
  * @param {number} y
  */
 function drawCells(x, y) {
-  for (let i = 1; i < COUNT; i++) {
+  for (let i = 1; i < boardSize; i++) {
     ctx?.beginPath();
     ctx?.moveTo(x * i, 0);
     ctx?.lineTo(x * i, y);
@@ -102,7 +100,7 @@ function drawCells(x, y) {
 
 drawCells(CELL_SZ, HEIGHT);
 // TODO: generalize the drawing of cells
-for (let i = 1; i < COUNT; i++) {
+for (let i = 1; i < boardSize; i++) {
   ctx?.beginPath();
   ctx?.moveTo(0, CELL_SZ * i);
   ctx?.lineTo(WIDTH, CELL_SZ * i);
@@ -110,40 +108,27 @@ for (let i = 1; i < COUNT; i++) {
 }
 
 /**
- * @param {number} num
- * @param {number} min
- * @param {number} max
- */
-function between(num, min, max) {
-  return num > min && num < max;
-}
-
-/**
  * @param {number} xCoord
  * @param {number} yCoord
  */
 function findCell(xCoord, yCoord) {
-  for (let i = 0; i < COUNT; i++) {
-    if (between(yCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
-      cell.y = i;
-    }
-    if (between(xCoord, CELL_SZ * i, CELL_SZ * (i + 1))) {
-      cell.x = i;
-    }
-  }
+  cell.y = Math.floor(yCoord / CELL_SZ);
+  cell.x = Math.floor(xCoord / CELL_SZ);
+
+  console.log(`${yCoord}/${xCoord} -> ${cell.y}/${cell.x}`);
 }
 
 //TODO: generalize WIN checking without massive if conditions
 function checkWin() {
-  if (turn === COUNT * COUNT && !won) {
+  if (turn === boardSize * boardSize && !won) {
     setHeader("No Winner");
     refresh?.removeAttribute("disabled");
     won = false;
   }
 
-  for (let j = 0; j < COUNT; j++) {
+  for (let j = 0; j < boardSize; j++) {
     if (cell.y === j) {
-      for (let i = 0; i < COUNT; i++) {
+      for (let i = 0; i < boardSize; i++) {
         if (cells[j][i] === player) {
           won = true;
         } else {
@@ -156,9 +141,9 @@ function checkWin() {
 
   if (won) return won;
 
-  for (let j = 0; j < COUNT; j++) {
+  for (let j = 0; j < boardSize; j++) {
     if (cell.x === j) {
-      for (let i = 0; i < COUNT; i++) {
+      for (let i = 0; i < boardSize; i++) {
         if (cells[i][j] === player) {
           won = true;
         } else {
@@ -173,7 +158,7 @@ function checkWin() {
   //cells[0][0] === player &&
   //cells[1][1] === player &&
   //cells[2][2] === player
-  for (let j = 0; j < COUNT; j++) {
+  for (let j = 0; j < boardSize; j++) {
     if (cells[j][j] === player) {
       won = true;
     } else {
@@ -187,9 +172,9 @@ function checkWin() {
   //cells[0][2] === player &&
   //cells[1][1] === player &&
   //cells[2][0] === player
-  for (let i = COUNT - 1; i >= 0; i--) {
+  for (let i = boardSize - 1; i >= 0; i--) {
     //0 + (2-1)
-    if (cells[0 + (COUNT - 1 - i)][i] === player) {
+    if (cells[0 + (boardSize - 1 - i)][i] === player) {
       won = true;
     } else {
       won = false;
